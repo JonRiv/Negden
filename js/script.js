@@ -17,8 +17,10 @@
 ...........,??????:+?????:......................................................
 ............,???????????........................................................
 ..............,=?????,..........................................................
-.....................ALL RIGHTS RESERVED........Author:JonRiv.......*/
-
+.....................ALL RIGHTS RESERVED........Author:Jonathan Rivalan.......*/
+  
+  //todo refactoriser en méthodes (init, replay)
+  //todo add ghost option
   function BubbleLauncher(){
 
       //Informations sur la scene
@@ -34,17 +36,11 @@
     c0reCanvas.width = wW;
     c0reCanvas.height = wH;
     c0re.insertBefore(c0reCanvas, c0re.firstChild);
-    var can = document.querySelector('#canvas1');
-    var ctx = can.getContext('2d');
-    
-      //Création du canvas secondaire pour pre-rendering
-    var can2 = document.createElement('canvas');
-    can2.width = wW;
-    can2.height = wH;
-    var ctx2 = can2.getContext('2d');
+    //var can = document.querySelector('#canvas1');
+    var ctx = c0reCanvas.getContext('2d');
 
       // Variables de l'effet
-    var bNum = 99,
+    var bNum = 49,
         bMinSz = 4,
         bMaxSz = 100, 
         bMinSp = 0,
@@ -57,7 +53,7 @@
                     "(255,87,123)"],//roge
         SpecialColor = "(255,0,78)", //#ce0f0f
         bDelay = 1500, //tps avant lancement
-        bRender = "render";//methode de rendu, prend les valeurs "render" ou "prerender"
+        bRender = "render";//methode de rendu, prend les valeurs "render" ou "prerender" (deprecated)
     //Mises en cache !!ne pas modifier
     var counter = 0, //quand atteind la valeur de bNum, arrête l'animation
         recounter = 0, //compte le nombre de relaunch
@@ -100,10 +96,6 @@
           render();
           document.querySelector('#rend').innerText = "// rendu direct";
         }
-        else if (bRender == "prerender"){
-          prerender();
-          document.querySelector('#rend').innerText = "// pré-rendu";
-        }
         else {render();}
       },bDelay);
     };
@@ -120,16 +112,6 @@
       bAnim = requestAnimationFrame(render);
       step(ctx);
       cursorHandle();
-    //FPS COUNTER PART2
-      var tFT = (tL=new Date) - lL;fT+= (tFT - fT) / fS;lL = tL;
-    }
-
-    function prerender(){
-      step(ctx2,ctx);
-      ctx.clearRect(0, 0, wW, wH);
-      ctx.drawImage(can2, 0, 0);
-      bAnim = requestAnimationFrame(prerender);
-
     //FPS COUNTER PART2
       var tFT = (tL=new Date) - lL;fT+= (tFT - fT) / fS;lL = tL;
     }
@@ -409,30 +391,6 @@
       z = nbis+1;
     return Math.floor(Math.random()*(z-n)+n);
     }
-    //Initialise l'API d'animation HTML5 /*Credits : Erik Möller & Paul Irish*/
-    (function() {
-        var lastTime = 0;
-        var vendors = ['ms', 'moz', 'webkit', 'o'];
-        for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-            window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-            window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
-        }
-     
-        if (!window.requestAnimationFrame)
-            window.requestAnimationFrame = function(callback, element) {
-                var currTime = new Date().getTime();
-                var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-                var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
-                  timeToCall);
-                lastTime = currTime + timeToCall;
-                return id;
-            };
-     
-        if (!window.cancelAnimationFrame)
-            window.cancelAnimationFrame = function(id) {
-                clearTimeout(id);
-            };
-    }());
 
       //todo readd the relaunch button
       (function BubbleDemo(){
@@ -474,7 +432,3 @@
     BubbleLauncher();
   }
   /*au click sur démos, on relance l'anim :)*/
-
-
-
-
